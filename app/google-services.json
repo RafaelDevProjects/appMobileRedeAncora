@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "117135287342",
+    "firebase_url": "https://appredeancora-8a2fc-default-rtdb.firebaseio.com",
+    "project_id": "appredeancora-8a2fc",
+    "storage_bucket": "appredeancora-8a2fc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:117135287342:android:130358084011b0d590abbf",
+        "android_client_info": {
+          "package_name": "br.com.redeAncora.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA14Ops98vxVi4FDSKgyp4lL84bXiv81JM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
