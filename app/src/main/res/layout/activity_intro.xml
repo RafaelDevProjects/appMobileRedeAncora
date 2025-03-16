@@ -10,11 +10,11 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="48dp"
-        android:text="Easy way to buy \nyour dream car"
+        android:text="Facilitamos a compra de peças para você!"
         android:textColor="@color/white"
         android:textSize="48sp"
         android:textStyle="bold"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:text="Loremy ldoawadngn dawogwaodajwf aw awdowotwan dwa dwaga  wdkawomber ad wad waotawopdwa dwanjewajtbnajbssd-waiidwu dwa "
+        android:text="Encontre as peças que você precisa de forma rápida, segura e sem complicação. Compare opções, escolha com confiança na rede ãncora"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:layout_marginTop="24dp"
@@ -58,7 +58,7 @@
         android:layout_height="60dp"
 
 
-        android:text="Get Started"
+        android:text="Vamos lá"
         android:textSize="20sp"
         style="@android:style/Widget.Button"
         android:textStyle="bold

@@ -1,5 +1,6 @@
 package br.com.redeAncora.app.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -38,7 +39,12 @@ public class MainActivity extends BaseActivity {
 
         initCategoryList();
         initPopularList();
+        bottomNavigation();
 
+    }
+
+    private void bottomNavigation() {
+        binding.profileBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
     }
 
     private void initPopularList() {

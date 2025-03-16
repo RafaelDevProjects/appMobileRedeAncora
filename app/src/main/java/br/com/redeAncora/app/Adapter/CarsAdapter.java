@@ -1,6 +1,7 @@
 package br.com.redeAncora.app.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
+import br.com.redeAncora.app.Activity.DetailActivity;
 import br.com.redeAncora.app.Domain.CarDomain;
 import br.com.redeAncora.app.databinding.ViewholderCarsBinding;
 
@@ -42,6 +44,12 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.Viewholder> {
                 .load(items.get(position).getPicUrl())
                 .apply(new RequestOptions().transform(new CenterCrop()))
                 .into(holder.binding.pic);
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent= new Intent(context, DetailActivity.class);
+            intent.putExtra("object", items.get(position));
+            context.startActivity(intent);
+        });
     }
 
     @Override
