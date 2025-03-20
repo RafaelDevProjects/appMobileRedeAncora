@@ -11,8 +11,12 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class BaseActivity extends AppCompatActivity {
+    // Instância do banco de dados do Firebase.
     public FirebaseDatabase database;
 
+    /**
+    * Inicializa o Firebase e configura a janela para tela cheia, removendo limites de layout.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

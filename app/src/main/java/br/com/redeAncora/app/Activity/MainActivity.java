@@ -4,16 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,16 +15,19 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import br.com.redeAncora.app.Adapter.CarsAdapter;
+import br.com.redeAncora.app.Adapter.PecasAdapter;
 import br.com.redeAncora.app.Adapter.CategoryAdapter;
-import br.com.redeAncora.app.Domain.CarDomain;
+import br.com.redeAncora.app.Domain.PecasDomain;
 import br.com.redeAncora.app.Domain.CategoryDomain;
-import br.com.redeAncora.app.R;
 import br.com.redeAncora.app.databinding.ActivityMainBinding;
 
 public class MainActivity extends BaseActivity {
+    // Responsável por vincular os elementos da interface.
     ActivityMainBinding binding;
 
+    /**
+     * Configura a view e inicializa as listas de categorias e peças populares.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,25 +40,32 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    /**
+     * Configura a navegação para a ProfileActivity.
+     */
     private void bottomNavigation() {
         binding.profileBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
     }
 
+
+    /**
+     * Busca dados de peças populares no Firebase e popula a RecyclerView
+     */
     private void initPopularList() {
-        DatabaseReference myref = database.getReference("Cars");
+        DatabaseReference myref = database.getReference("Pecas");
         binding.progressBarPopular.setVisibility(View.VISIBLE);
-        ArrayList<CarDomain> items = new ArrayList<>();
+        ArrayList<PecasDomain> items = new ArrayList<>();
 
         myref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
                     for(DataSnapshot isuue:snapshot.getChildren()){
-                        items.add(isuue.getValue(CarDomain.class));
+                        items.add(isuue.getValue(PecasDomain.class));
                     }
                     if(!items.isEmpty()){
                         binding.recyclerViewPopular.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
-                        binding.recyclerViewPopular.setAdapter(new CarsAdapter(items));
+                        binding.recyclerViewPopular.setAdapter(new PecasAdapter(items));
                         binding.recyclerViewPopular.setNestedScrollingEnabled(true);
                     }
                     binding.progressBarPopular.setVisibility(View.GONE);
@@ -76,6 +80,9 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    /**
+     *  Busca dados das categorias no Firebase e popula a RecyclerView correspondente.
+     */
     private void initCategoryList() {
         DatabaseReference myref=database.getReference("Category");
         binding.progressBarCategory.setVisibility(View.VISIBLE);

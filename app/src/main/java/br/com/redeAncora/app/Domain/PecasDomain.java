@@ -2,18 +2,22 @@ package br.com.redeAncora.app.Domain;
 
 import java.io.Serializable;
 
-public class CarDomain implements Serializable {
+/**
+ * Classe que representa uma peca no sistema.
+ * Implementa Serializable para permitir a transferência de objetos entre Activities.
+ */
+public class PecasDomain implements Serializable {
     private String title;
     private String description;
     private String picUrl;
-    private String TotalCapacity;
-    private String EngineOutput;
+    private String detalhes;
+    private String marca;
     private String HighestSpeed;
     private double price;
     private double rating;
 
 
-    public CarDomain() {
+    public PecasDomain() {
     }
 
     public String getTitle() {
@@ -40,20 +44,20 @@ public class CarDomain implements Serializable {
         this.picUrl = picUrl;
     }
 
-    public String getTotalCapacity() {
-        return TotalCapacity;
+    public String getDetalhes() {
+        return detalhes;
     }
 
-    public void setTotalCapacity(String totalCapacity) {
-        TotalCapacity = totalCapacity;
+    public void setDetalhes(String detalhes) {
+        this.detalhes = detalhes;
     }
 
-    public String getEngineOutput() {
-        return EngineOutput;
+    public String getMarca() {
+        return marca;
     }
 
-    public void setEngineOutput(String engineOutput) {
-        EngineOutput = engineOutput;
+    public void setMarca(String marca) {
+        this.marca = marca;
     }
 
     public String getHighestSpeed() {

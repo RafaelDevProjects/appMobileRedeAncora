@@ -1,5 +1,8 @@
 package br.com.redeAncora.app.Domain;
 
+/**
+ * Classe que representa uma categoria de carro no sistema.
+ */
 public class CategoryDomain {
     private String title;
     private int id;
