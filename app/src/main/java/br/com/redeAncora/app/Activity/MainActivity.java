@@ -2,6 +2,8 @@ package br.com.redeAncora.app.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -52,20 +54,24 @@ public class MainActivity extends BaseActivity {
      * Busca dados de peças populares no Firebase e popula a RecyclerView
      */
     private void initPopularList() {
-        DatabaseReference myref = database.getReference("Pecas");
+        DatabaseReference myRef = database.getReference("Pecas");
         binding.progressBarPopular.setVisibility(View.VISIBLE);
-        ArrayList<PecasDomain> items = new ArrayList<>();
+        ArrayList<PecasDomain> allItems = new ArrayList<>();
+        ArrayList<PecasDomain> filteredItems = new ArrayList<>();
+        PecasAdapter adapter = new PecasAdapter(filteredItems);
 
-        myref.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    for(DataSnapshot isuue:snapshot.getChildren()){
-                        items.add(isuue.getValue(PecasDomain.class));
+                if (snapshot.exists()) {
+                    for (DataSnapshot issue : snapshot.getChildren()) {
+                        PecasDomain peca = issue.getValue(PecasDomain.class);
+                        allItems.add(peca);
                     }
-                    if(!items.isEmpty()){
+                    filteredItems.addAll(allItems);
+                    if (!filteredItems.isEmpty()) {
                         binding.recyclerViewPopular.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
-                        binding.recyclerViewPopular.setAdapter(new PecasAdapter(items));
+                        binding.recyclerViewPopular.setAdapter(adapter);
                         binding.recyclerViewPopular.setNestedScrollingEnabled(true);
                     }
                     binding.progressBarPopular.setVisibility(View.GONE);
@@ -74,11 +80,30 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
 
+        // Listener para o campo de busca
+        binding.editTextText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filteredItems.clear();
+                for (PecasDomain peca : allItems) {
+                    if (peca.getTitle().toLowerCase().contains(s.toString().toLowerCase())) {
+                        filteredItems.add(peca);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
     }
+
 
     /**
      *  Busca dados das categorias no Firebase e popula a RecyclerView correspondente.
