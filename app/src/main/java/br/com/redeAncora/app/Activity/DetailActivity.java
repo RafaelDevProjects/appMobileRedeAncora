@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide;
 import java.text.NumberFormat;
 
 import br.com.redeAncora.app.Domain.PecasDomain;
+import br.com.redeAncora.app.R;
 import br.com.redeAncora.app.databinding.ActivityDetailBinding;
 
 public class DetailActivity extends BaseActivity {
@@ -15,6 +16,9 @@ public class DetailActivity extends BaseActivity {
 
     // Objeto que representa a peca selecionado.
     PecasDomain object;
+
+    private boolean isFavorited = false; // Variável para controlar o estado do favorito
+
 
     /**
      * Configura a view e chama os métodos getIntentExtra() e setVariable()
@@ -27,6 +31,7 @@ public class DetailActivity extends BaseActivity {
 
         getIntentExtra();
         setVariable();
+        setupFavoriteButton();
     }
 
     /**
@@ -54,5 +59,19 @@ public class DetailActivity extends BaseActivity {
     private void getIntentExtra() {
         object= (PecasDomain) getIntent().getSerializableExtra("object");
 
+    }
+
+    private void setupFavoriteButton() {
+        binding.coracaoDeFavoritar.setOnClickListener(v -> {
+            isFavorited = !isFavorited; // Alterna entre favoritado e não favoritado
+            updateFavoriteIcon(); // Atualiza o ícone de favorito
+        });
+
+        updateFavoriteIcon(); // Inicializa o ícone corretamente
+    }
+
+    private void updateFavoriteIcon() {
+        int iconRes = isFavorited ? R.drawable.star : R.drawable.fav_icon;
+        binding.coracaoDeFavoritar.setImageResource(iconRes);
     }
 }
