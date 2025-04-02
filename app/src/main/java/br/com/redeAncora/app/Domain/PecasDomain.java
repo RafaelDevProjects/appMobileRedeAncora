@@ -15,7 +15,7 @@ public class PecasDomain implements Serializable {
     private String HighestSpeed;
     private double price;
     private double rating;
-
+    private String category; // Adicionando categoria
 
     public PecasDomain() {
     }
@@ -82,5 +82,13 @@ public class PecasDomain implements Serializable {
 
     public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

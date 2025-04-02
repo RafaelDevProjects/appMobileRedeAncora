@@ -22,14 +22,21 @@ import br.com.redeAncora.app.databinding.ViewholderCategoryBinding;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Viewholder> {
     private ArrayList<CategoryDomain> items;
     private Context context;
+    private OnCategoryClickListener listener; // Adicionar um listener
+
+    public interface OnCategoryClickListener {
+        void onCategoryClick(String category);
+    }
 
     /**
      * Construtor que recebe a lista de categorias.
      * @param items Lista de objetos CategoryDomain
      */
-    public CategoryAdapter(ArrayList<CategoryDomain> items) {
+    public CategoryAdapter(ArrayList<CategoryDomain> items, OnCategoryClickListener listener) {
         this.items = items;
+        this.listener = listener;
     }
+
 
 
     /**
@@ -55,6 +62,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Viewho
      */
     @Override
     public void onBindViewHolder(@NonNull CategoryAdapter.Viewholder holder, int position) {
+        CategoryDomain category = items.get(position);
+
         // Definindo o nome da categoria no TextView
         holder.binding.titleTxt.setText(items.get(position).getTitle());
 
@@ -63,6 +72,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Viewho
         Glide.with(context)
                 .load(items.get(position).getPicUrl())
                 .into(holder.binding.pic);
+
+        // Define o clique na categoria
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCategoryClick(category.getTitle()); // Passa o título da categoria clicada
+            }
+        });
     }
 
     /**
@@ -80,10 +96,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Viewho
     public class Viewholder extends RecyclerView.ViewHolder {
         ViewholderCategoryBinding binding;
 
-        /**
-         * Construtor do ViewHolder.
-         * @param binding Ligação com os elementos da interface
-         */
         public Viewholder(ViewholderCategoryBinding binding) {
             super(binding.getRoot());
             this.binding=binding;

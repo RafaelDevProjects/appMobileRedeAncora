@@ -53,12 +53,17 @@ public class MainActivity extends BaseActivity {
     /**
      * Busca dados de peças populares no Firebase e popula a RecyclerView
      */
+    private ArrayList<PecasDomain> allItems = new ArrayList<>();
+    private ArrayList<PecasDomain> filteredItems = new ArrayList<>();
+    private PecasAdapter adapter;
+
     private void initPopularList() {
         DatabaseReference myRef = database.getReference("Pecas");
         binding.progressBarPopular.setVisibility(View.VISIBLE);
-        ArrayList<PecasDomain> allItems = new ArrayList<>();
-        ArrayList<PecasDomain> filteredItems = new ArrayList<>();
-        PecasAdapter adapter = new PecasAdapter(filteredItems);
+
+        adapter = new PecasAdapter(filteredItems);
+        binding.recyclerViewPopular.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
+        binding.recyclerViewPopular.setAdapter(adapter);
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -69,13 +74,9 @@ public class MainActivity extends BaseActivity {
                         allItems.add(peca);
                     }
                     filteredItems.addAll(allItems);
-                    if (!filteredItems.isEmpty()) {
-                        binding.recyclerViewPopular.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
-                        binding.recyclerViewPopular.setAdapter(adapter);
-                        binding.recyclerViewPopular.setNestedScrollingEnabled(true);
-                    }
-                    binding.progressBarPopular.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
                 }
+                binding.progressBarPopular.setVisibility(View.GONE);
             }
 
             @Override
@@ -90,13 +91,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filteredItems.clear();
-                for (PecasDomain peca : allItems) {
-                    if (peca.getTitle().toLowerCase().contains(s.toString().toLowerCase())) {
-                        filteredItems.add(peca);
-                    }
-                }
-                adapter.notifyDataSetChanged();
+                filterItemsBySearch(s.toString());
             }
 
             @Override
@@ -104,27 +99,62 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    /**
+     * Filtra os itens populares pela categoria clicada.
+     */
+    private void filterItemsByCategory(String category) {
+        filteredItems.clear();
+
+        // Se a categoria for "Todos", mostrar todas as peças
+        if (category.equals("Todos")) {
+            filteredItems.addAll(allItems);
+        } else {
+            for (PecasDomain peca : allItems) {
+                if (peca.getCategory().equals(category)) {
+                    filteredItems.add(peca);
+                }
+            }
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Filtra os itens populares pela busca do usuário.
+     */
+    private void filterItemsBySearch(String query) {
+        filteredItems.clear();
+        for (PecasDomain peca : allItems) {
+            if (peca.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                filteredItems.add(peca);
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
 
     /**
      *  Busca dados das categorias no Firebase e popula a RecyclerView correspondente.
      */
     private void initCategoryList() {
-        DatabaseReference myref=database.getReference("Category");
+        DatabaseReference myref = database.getReference("Category");
         binding.progressBarCategory.setVisibility(View.VISIBLE);
 
         ArrayList<CategoryDomain> items = new ArrayList<>();
         myref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    for(DataSnapshot issue : snapshot.getChildren()){
+                if (snapshot.exists()) {
+                    for (DataSnapshot issue : snapshot.getChildren()) {
                         items.add(issue.getValue(CategoryDomain.class));
                     }
-                    if(!items.isEmpty()){
+                    if (!items.isEmpty()) {
                         binding.recyclerViewCategory.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                        binding.recyclerViewCategory.setAdapter(new CategoryAdapter(items));
-                        binding.recyclerViewCategory.setNestedScrollingEnabled(true);
 
+                        // Configura o adapter e adiciona o listener de clique
+                        CategoryAdapter categoryAdapter = new CategoryAdapter(items, MainActivity.this::filterItemsByCategory);
+                        binding.recyclerViewCategory.setAdapter(categoryAdapter);
+                        binding.recyclerViewCategory.setNestedScrollingEnabled(true);
                     }
                     binding.progressBarCategory.setVisibility(View.GONE);
                 }
@@ -132,9 +162,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
-
     }
 }
