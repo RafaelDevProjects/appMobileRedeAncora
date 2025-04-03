@@ -21,6 +21,7 @@ import br.com.redeAncora.app.Adapter.PecasAdapter;
 import br.com.redeAncora.app.Adapter.CategoryAdapter;
 import br.com.redeAncora.app.Domain.PecasDomain;
 import br.com.redeAncora.app.Domain.CategoryDomain;
+import br.com.redeAncora.app.R;
 import br.com.redeAncora.app.databinding.ActivityMainBinding;
 
 public class MainActivity extends BaseActivity {
@@ -42,12 +43,15 @@ public class MainActivity extends BaseActivity {
 
     }
 
+
     /**
      * Configura a navegação para a ProfileActivity.
      */
     private void bottomNavigation() {
         binding.profileBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
+        binding.favoriteIcon.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ActivityFavorite.class)));
     }
+
 
 
     /**

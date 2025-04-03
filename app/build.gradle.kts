@@ -43,5 +43,6 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     implementation ("com.google.code.gson:gson:2.9.1")
+    implementation ("com.google.firebase:firebase-auth:21.0.1")
     implementation(libs.firebase.database.v2030)
 }
