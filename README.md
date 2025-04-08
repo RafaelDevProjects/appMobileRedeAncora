@@ -1,95 +1,116 @@
-# Documentação do Projeto RedeAncora
 
-## Visão Geral
+# 📱 Aplicativo Rede Âncora
 
-O RedeAncora é um aplicativo Android desenvolvido em Java que permite a exibição e compra de peças automotivas. Os usuários podem visualizar detalhes das peças, descrições, preços, imagens e outras informações relevantes. O aplicativo utiliza Firebase como banco de dados para armazenar informações das peças e categorias, garantindo uma experiência dinâmica e atualizada.
+Aplicativo Android desenvolvido para aproximar mecânicos e oficinas das mais de 840 lojas franqueadas da Rede Âncora, permitindo a visualização, busca, cotação e gerenciamento de peças automotivas.
 
-## Tecnologias Utilizadas
+---
 
-- **Linguagem:** Java
+## 📌 Objetivo do Projeto
 
-- **Frameworks:** Android SDK
-  
-- **Banco de Dados:** Firebase Realtime Database
+O projeto nasceu a partir da necessidade de **facilitar o relacionamento entre mecânicos e as lojas da Rede Âncora**, além de **otimizar o processo de cotação e compra de peças automotivas**. Através de uma interface prática e moderna, o aplicativo torna possível:
 
-- **Bibliotecas:** Glide (para carregamento de imagens), RecyclerView (para listagem de itens)
+- Consultar peças por categoria
+- Visualizar detalhes e imagens
+- Buscar peças por nome
+- Marcar peças como favoritas
+- Explorar categorias com imagens ilustrativas
+- Acessar rapidamente o perfil e favoritos
 
-- **Padrões de Projeto:** MVP (Model-View-Presenter)
+---
 
-- **Persistência de Dados:** Serializable (para transferência de objetos entre Activities)
+## 🚀 Funcionalidades
 
-# Estrutura do Projeto
+| Função                                           | Descrição                                                                           |
+|--------------------------------------------------|-------------------------------------------------------------------------------------|
+| 🏁 Tela de Introdução                            | Interface inicial com botão de entrada para o app                                  |
+| 🏠 Tela Principal (`MainActivity`)               | Exibe peças populares, categorias e barra de busca                                 |
+| 🛠️ Filtro por Categoria                          | Permite visualizar peças apenas da categoria selecionada                           |
+| 🔍 Busca Inteligente                             | Filtro dinâmico por nome das peças digitado pelo usuário                           |
+| ⭐ Favoritos (`ActivityFavorite`)                 | Lista todas as peças marcadas como favoritas pelo usuário                          |
+| 🔎 Detalhes da Peça (`DetailActivity`)           | Mostra todas as informações da peça (imagem, marca, avaliação, etc.)               |
+| 👤 Perfil (`ProfileActivity`)                    | Tela com opção de voltar e informações do app (possibilidade de expansão)          |
 
-# Descrição das Classes
+---
 
-### **1. PecasDomain.java** (Pacote: br.com.redeAncora.app.Domain)
+## 🧱 Estrutura de Código
 
-Classe que representa uma peça automotiva no sistema.
+```
+📁 br.com.redeAncora.app
+├── Activity/
+│   ├── IntroActivity.java
+│   ├── MainActivity.java
+│   ├── DetailActivity.java
+│   ├── ActivityFavorite.java
+│   ├── ProfileActivity.java
+│   └── BaseActivity.java
+├── Adapter/
+│   ├── PecasAdapter.java
+│   └── CategoryAdapter.java
+├── Domain/
+│   ├── PecasDomain.java
+│   └── CategoryDomain.java
+├── res/layout/         (layouts XML utilizados com ViewBinding)
+└── Firebase/           (configuração do Realtime Database & Storage)
+```
 
-**Atributos:**
+---
 
-- **title**: Nome da peça
+## 🗃️ Banco de Dados
 
-- **description**: Descrição detalhada
+- **Firebase Realtime Database**
+- **Estrutura:**
+  - **Category:** Armazena as categorias de peças.
+    - **Campos:** `id` (int), `title` (String), `picUrl` (String)
+  - **Pecas:** Armazena os detalhes das peças automotivas.
+    - **Campos:** `title` (String), `description` (String), `detalhes` (String), `category` (String), `marca` (String), `price` (double), `rating` (double), `isFavorito` (boolean), `picUrl` (String)
+- **Relacionamento Lógico:**  
+  O campo `category` em **Pecas** faz referência ao `title` da **Category**, indicando a qual categoria a peça pertence.
 
-- **picUrl**: URL da imagem
+---
 
-- **detalhes**: Características específicas
+## 🧰 Tecnologias Utilizadas
 
-- **marca**: Marca da peça
+- **Android Studio + Java**
+- **Firebase Realtime Database & Storage**
+- **ViewBinding** para gerenciamento seguro dos layouts
+- **Glide** para carregamento e exibição de imagens
+- **RecyclerView** e **Adapters customizados** para listagem dos itens
 
-- **HighestSpeed**: Velocidade máxima suportada (caso aplicável)
+---
 
-- **price**: Preço
+## 🧪 Como Rodar o Projeto
 
-- **rating**: Avaliação dos usuários
+1. **Clone o repositório:**
+   ```bash
+   git clone https://github.com/RafaelDevProjects/appMobileRedeAncora.git
+   ```
+2. **Abra o projeto no Android Studio:**
+   - Certifique-se de ter o Android Studio instalado.
+3. **Execute o aplicativo:**
+   - Utilize um dispositivo físico ou emulador Android para rodar o app.
+4. **Verifique as dependências:**
+   - Certifique-se de que as dependências do Firebase, Glide e ViewBinding estão configuradas no `build.gradle`.
 
-### **2. CategoryDomain.java** (Pacote: br.com.redeAncora.app.Domain)
+---
 
-Classe que representa uma categoria de peças.
+## 📸 Prints & Demonstrações
 
-**Atributos:**
+> **Dica:** Insira aqui os prints das telas (Intro, Main, Detail, Favorites, Perfil) para ilustrar a interface e navegação do app.
 
-- **title**: Nome da categoria
+---
 
-- **id:** Identificador único
+## 📄 Licença
 
-- **picUrl:** URL da imagem
+Este projeto foi desenvolvido para fins acadêmicos e de prototipagem. Pode ser adaptado ou expandido para uso real com ajustes adicionais no backend, autenticação e segurança.
 
-### **3. PecasAdapter.java** (Pacote: br.com.redeAncora.app.Adapter)
+---
 
-Adaptador para exibição de peças em um RecyclerView.
+## 👥 Contribuição
 
-**Principais Funções:**
+Se você deseja contribuir para este projeto, sinta-se à vontade para abrir issues ou enviar pull requests.
 
-- **onCreateViewHolder():** Cria e infla um novo ViewHolder
+---
 
-- **onBindViewHolder():** Associa os dados à View
+## 💬 Contato
 
-- **getItemCount():** Retorna a quantidade de itens na lista
-
-- **Viewholder:** Classe interna para manipulação da interface
-
-### **4. DetailActivity.java** (Pacote: br.com.redeAncora.app.Activity)
-
-Tela de detalhes de uma peça.
-
-**Responsabilidades:**
-
-- Receber o objeto PecasDomain via Intent
-
-- Exibir os detalhes da peça selecionada
-
-## Fluxo de Funcionamento
-
-1. O aplicativo se conecta ao Firebase e carrega a lista de peças e categorias.
-
-2. A lista de peças é carregada na RecyclerView.
-
-3. O usuário pode clicar em uma peça para ver seus detalhes.
-
-4. A DetailActivity é aberta exibindo informações completas.
-
-Autor
-
-Desenvolvido por Rafael Sigoli
+Para dúvidas ou sugestões, entre em contato através de [seu email] ou [seu perfil no GitHub].
