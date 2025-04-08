@@ -7,6 +7,7 @@ import java.io.Serializable;
  * Implementa Serializable para permitir a transferência de objetos entre Activities.
  */
 public class PecasDomain implements Serializable {
+    private String id;
     private String title;
     private String description;
     private String picUrl;
@@ -16,9 +17,21 @@ public class PecasDomain implements Serializable {
     private double price;
     private double rating;
     private String category; // Adicionando categoria
+    private boolean isFavorito;
+
+    public boolean getisFavorito() {
+        return isFavorito;
+    }
+
+    public void setFavorito(boolean favorito) {
+        this.isFavorito = favorito;
+    }
 
     public PecasDomain() {
     }
+
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getTitle() {
         return title;

@@ -69,6 +69,7 @@ public class PecasAdapter extends RecyclerView.Adapter<PecasAdapter.Viewholder> 
         // Define o clique para abrir a tela de detalhes
         holder.itemView.setOnClickListener(v -> {
             Intent intent= new Intent(context, DetailActivity.class);
+            intent.putExtra("pecaId", items.get(position).getId());
             intent.putExtra("object", items.get(position));
             context.startActivity(intent);
         });

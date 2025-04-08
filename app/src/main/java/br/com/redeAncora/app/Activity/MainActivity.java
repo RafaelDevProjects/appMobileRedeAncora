@@ -28,6 +28,10 @@ public class MainActivity extends BaseActivity {
     // Responsável por vincular os elementos da interface.
     ActivityMainBinding binding;
 
+    private ArrayList<PecasDomain> allItems = new ArrayList<>();
+    private ArrayList<PecasDomain> filteredItems = new ArrayList<>();
+    private PecasAdapter adapter;
+
     /**
      * Configura a view e inicializa as listas de categorias e peças populares.
      */
@@ -57,9 +61,7 @@ public class MainActivity extends BaseActivity {
     /**
      * Busca dados de peças populares no Firebase e popula a RecyclerView
      */
-    private ArrayList<PecasDomain> allItems = new ArrayList<>();
-    private ArrayList<PecasDomain> filteredItems = new ArrayList<>();
-    private PecasAdapter adapter;
+
 
     private void initPopularList() {
         DatabaseReference myRef = database.getReference("Pecas");
@@ -75,6 +77,7 @@ public class MainActivity extends BaseActivity {
                 if (snapshot.exists()) {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         PecasDomain peca = issue.getValue(PecasDomain.class);
+                        peca.setId(issue.getKey());
                         allItems.add(peca);
                     }
                     filteredItems.addAll(allItems);

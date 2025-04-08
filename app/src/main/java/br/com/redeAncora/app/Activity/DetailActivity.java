@@ -23,8 +23,6 @@ public class DetailActivity extends BaseActivity {
     PecasDomain object;
     private boolean isFavorited = false; // Variável para controlar o estado do favorito
     private DatabaseReference favRef;
-    private String userId;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,11 +32,10 @@ public class DetailActivity extends BaseActivity {
         getIntentExtra();
         setVariable();
 
-        // Simula um usuário fixo
-        userId = "userId_1";
         setupFavoriteButton();
     }
 
+    private String pecaId;
     /**
      * Preenche os elementos da tela com os dados do objeto PecasDomain e carrega a imagem usando Glide.
      */
@@ -63,41 +60,36 @@ public class DetailActivity extends BaseActivity {
      */
     private void getIntentExtra() {
         object = (PecasDomain) getIntent().getSerializableExtra("object");
+        pecaId = getIntent().getStringExtra("pecaId");
     }
 
     /**
      * Configura o botão de favoritos, verificando no Firebase e alternando o estado.
      */
     private void setupFavoriteButton() {
-        // Define um ID fixo para simular um usuário autenticado
-        userId = "userId_1";
+        DatabaseReference pecasRef = FirebaseDatabase.getInstance().getReference("Pecas").child(pecaId);
 
-        favRef = FirebaseDatabase.getInstance().getReference("Favoritos").child(userId);
-
-        favRef.child(object.getTitle()).addListenerForSingleValueEvent(new ValueEventListener() {
+        pecasRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    isFavorited = true;
-                } else {
-                    isFavorited = false;
+                    Boolean isFav = snapshot.child("isFavorito").getValue(Boolean.class);
+                    if (isFav != null) {
+                        isFavorited = isFav;
+                        updateFavoriteIcon();
+                    }
                 }
-                updateFavoriteIcon();
+
+                binding.coracaoDeFavoritar.setOnClickListener(v -> {
+                    isFavorited = !isFavorited;
+                    pecasRef.child("isFavorito").setValue(isFavorited);
+                    updateFavoriteIcon();
+                });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
-        binding.coracaoDeFavoritar.setOnClickListener(v -> {
-            isFavorited = !isFavorited;
-            updateFavoriteIcon();
-
-            if (isFavorited) {
-                favRef.child(object.getTitle()).setValue(object);
-            } else {
-                favRef.child(object.getTitle()).removeValue();
+                Log.e("Firebase", "Erro ao buscar peça: " + error.getMessage());
             }
         });
     }

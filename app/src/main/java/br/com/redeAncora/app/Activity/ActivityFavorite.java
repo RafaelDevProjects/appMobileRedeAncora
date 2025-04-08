@@ -1,13 +1,15 @@
 package br.com.redeAncora.app.Activity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,43 +20,68 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import br.com.redeAncora.app.Adapter.CategoryAdapter;
 import br.com.redeAncora.app.Adapter.PecasAdapter;
+import br.com.redeAncora.app.Domain.CategoryDomain;
 import br.com.redeAncora.app.Domain.PecasDomain;
 import br.com.redeAncora.app.R;
+import br.com.redeAncora.app.databinding.ActivityFavoriteBinding;
+import br.com.redeAncora.app.databinding.ActivityMainBinding;
+
 
 public class ActivityFavorite extends BaseActivity {
-    private RecyclerView recyclerView;
-    private PecasAdapter adapter;
-    private List<PecasDomain> favoriteList = new ArrayList<>();
-    private DatabaseReference favRef;
-    private String userId = "userId_1";
+    // Responsável por vincular os elementos da interface.
+    ActivityFavoriteBinding binding;
 
+    private ArrayList<PecasDomain> allFavoriteItems = new ArrayList<>();
+    private PecasAdapter adapter;
+
+    /**
+     * Configura a view e inicializa as listas de categorias e peças populares.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorite);
+        binding = ActivityFavoriteBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        recyclerView = findViewById(R.id.favoriteRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new PecasAdapter((ArrayList<PecasDomain>) favoriteList);
-        recyclerView.setAdapter(adapter);
+        initFavoriteList();
+        binding.backBtn.setOnClickListener(v -> finish());
+    }
 
-        favRef = FirebaseDatabase.getInstance().getReference("Favoritos").child(userId);
-        favRef.addValueEventListener(new ValueEventListener() {
+
+    /**
+     * Busca dados de peças favoritas no Firebase e popula a RecyclerView
+     */
+    private void initFavoriteList() {
+        DatabaseReference myRef = database.getReference("Pecas");
+        binding.progressBarFavorite.setVisibility(View.VISIBLE);;
+        adapter = new PecasAdapter(allFavoriteItems);
+        binding.favoriteRecyclerView.setLayoutManager(new GridLayoutManager(ActivityFavorite.this, 2));
+        binding.favoriteRecyclerView.setAdapter(adapter);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                favoriteList.clear();
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    PecasDomain peca = data.getValue(PecasDomain.class);
-                    favoriteList.add(peca);
+
+                if (snapshot.exists()) {
+                    allFavoriteItems.clear(); // sempre limpe a lista antes de adicionar
+                    for (DataSnapshot issue : snapshot.getChildren()) {
+                        PecasDomain peca = issue.getValue(PecasDomain.class);
+                        if (peca != null && peca.getisFavorito()) {
+                            peca.setId(issue.getKey());
+                            allFavoriteItems.add(peca);
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
+                binding.progressBarFavorite.setVisibility(View.GONE);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) { }
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         });
     }
 }
