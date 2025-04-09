@@ -78,6 +78,8 @@ O projeto nasceu a partir da necessidade de **facilitar o relacionamento entre m
 
 ---
 
+
+
 ## 🧪 Como Rodar o Projeto
 
 1. **Clone o repositório:**
@@ -92,6 +94,27 @@ O projeto nasceu a partir da necessidade de **facilitar o relacionamento entre m
    - Certifique-se de que as dependências do Firebase, Glide e ViewBinding estão configuradas no `build.gradle`.
 
 ---
+
+## 🔐 Configuração da SECRET_KEY (Chave de Segurança)
+
+Para proteger a escrita no Firebase Realtime Database, o aplicativo utiliza uma **chave secreta** (`SECRET_KEY`) que deve ser enviada junto com os dados ao marcar uma peça como favorita. Essa chave é exigida pelas regras de segurança do Firebase para validar a permissão de escrita.
+
+### 📍 Onde configurar
+
+A constante `SECRET_KEY` está localizada no arquivo `DetailActivity.java`, na linha:
+
+```java
+final String SECRET_KEY = "ADICIONAR_SECRET_KEY"; //ADICIONAR A SECRET KEY AQUI
+```
+
+> 🔐 Substitua `"ADICIONAR_SECRET_KEY"` pela mesma chave usada nas regras do Firebase.
+
+---
+
+### ✅ Recomendação de segurança
+
+- Mantenha a `SECRET_KEY` fora de repositórios públicos.
+- Se possível, extraia essa chave para um arquivo `.env`, uma `BuildConfig`, ou use Firebase Remote Config para carregar dinamicamente.
 
 ## 📸 Prints & Demonstrações
 
