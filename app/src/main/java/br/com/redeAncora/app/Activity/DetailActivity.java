@@ -13,11 +13,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Map;
+
 import br.com.redeAncora.app.Domain.PecasDomain;
 import br.com.redeAncora.app.R;
 import br.com.redeAncora.app.databinding.ActivityDetailBinding;
 
 public class DetailActivity extends BaseActivity {
+    final String SECRET_KEY = "ADICIONAR_SECRET_KEY"; //ADICIONAR A SECRET KEY AQUI
     // Responsável por vincular os elementos da interface.
     ActivityDetailBinding binding;
     PecasDomain object;
@@ -67,31 +71,47 @@ public class DetailActivity extends BaseActivity {
      * Configura o botão de favoritos, verificando no Firebase e alternando o estado.
      */
     private void setupFavoriteButton() {
-        DatabaseReference pecasRef = FirebaseDatabase.getInstance().getReference("Pecas").child(pecaId);
+        DatabaseReference pecasRef = FirebaseDatabase.getInstance().getReference("Pecas");
 
-        pecasRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    Boolean isFav = snapshot.child("isFavorito").getValue(Boolean.class);
-                    if (isFav != null) {
-                        isFavorited = isFav;
-                        updateFavoriteIcon();
+        pecasRef.orderByChild("title").equalTo(object.getTitle())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            for (DataSnapshot item : snapshot.getChildren()) {
+                                Boolean isFav = item.child("isFavorito").getValue(Boolean.class);
+                                if (isFav != null) {
+                                    isFavorited = isFav;
+                                    updateFavoriteIcon();
+                                }
+
+                                binding.coracaoDeFavoritar.setOnClickListener(v -> {
+                                    isFavorited = !isFavorited;
+
+                                    Map<String, Object> updates = new HashMap<>();
+                                    updates.put("isFavorito", isFavorited);
+                                    updates.put("apiKey", SECRET_KEY);
+
+                                    item.getRef().updateChildren(updates, (error, ref) -> {
+                                        if (error == null) {
+                                            // Remove a chave apiKey após salvar com sucesso
+                                            ref.child("apiKey").removeValue();
+                                        } else {
+                                            Log.e("Firebase", "Erro ao atualizar favorito: " + error.getMessage());
+                                        }
+                                    });
+
+                                    updateFavoriteIcon();
+                                });
+                            }
+                        }
                     }
-                }
 
-                binding.coracaoDeFavoritar.setOnClickListener(v -> {
-                    isFavorited = !isFavorited;
-                    pecasRef.child("isFavorito").setValue(isFavorited);
-                    updateFavoriteIcon();
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("Firebase", "Erro ao buscar peça: " + error.getMessage());
+                    }
                 });
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Firebase", "Erro ao buscar peça: " + error.getMessage());
-            }
-        });
     }
 
     /**
